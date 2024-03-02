@@ -7,23 +7,49 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class Users(Base):
+    __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
+    first_name = Column(String(250), nullable=False, unique=True)
+    last_name = Column(String(250), nullable=False)
+    password = Column(String(250), nullable=False)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Posts(Base):
+    __tablename__ = 'posts'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    title = Column(String(50), nullable=False)
+    description = Column(String(2000), nullable=False)
+    body = Column(String(2000), nullable=False)
+    posts_id = Column(Integer, ForeignKey('posts.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    img_url = Column(String)
+    user = relationship(Users)   
+
+
+class Comment(Base):
+    __tablename__ = 'comment'
+    id = Column(Integer, primary_key=True)
+    title = Column(String(50), nullable=False)
+    body = Column(String(2000), nullable=False)
+    posts = relationship(Posts)
+    author = relationship(Users) 
+
+class Followers(Base):
+    __tablename__ = 'follower'
+    id = Column(Integer, primary_key=True)
+    user_follower_id = Column(Integer, ForeignKey('users.id'))
+    user_following_id = Column(Integer, ForeignKey('users.id'))
+    follower = relationship(Users)
+
+
+class Like(Base):
+    __tablename__='Like'
+    id = Column (Integer, primary_key=True)
+    post_from_id = Column(Integer, ForeignKey('Post.id'))
+    post_to_id = Column(Integer, ForeignKey('Post.id'))
+    posts = relationship(Post)
+
 
     def to_dict(self):
         return {}
